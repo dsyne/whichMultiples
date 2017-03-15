@@ -26,7 +26,7 @@ export default class Game {
         return new Promise((resolve, reject) => {
             if(this.numbersArray) {
                 this.numbersArray.forEach(num => {
-                    const item = new Block(this.numbersArray)   
+                    const item = new Block(num, this.numbersArray)   
                     this.container.appendChild(item.create(num))
                 })
                 resolve()

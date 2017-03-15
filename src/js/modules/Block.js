@@ -2,49 +2,84 @@ import { multipleLimit } from '../config/config'
 import { createNode, toggleClass, hasClass } from '../helpers/helpers'
 
 export default class Block {
-    constructor(numbersArray) {
-        this.numbersArray = numbersArray
+    constructor(currentNumber, numbersArray) {
+        this.state = {
+            lastClicked: '',
+            num: currentNumber,
+            fullNumArray: numbersArray,
+            filteredNumArray: '',
+        }
     }
 
-    get() {
-        return document.querySelector(`[data-id="${this.number}"]`)
+    setState(key, val) {
+        this.state = {
+            ...this.state,
+            [key]: val,
+        }
+    }
+
+    resetClickState() {
+        /* 
+            When a item is clicked this.state.num changes
+            for each multiple found, so reset to last
+            clicked num
+        */ 
+        this.setState('num', this.state.lastClicked)
+    }
+
+    get(num) {
+        this.setState('num', num)
+        return document.querySelector(`[data-id="${this.state.num}"]`)
     }
 
     create(num) {
-        this.number = num
-        const item = createNode(`<li data-id="${this.number}">${this.number}</li>`)
-        item.addEventListener('click', () => this.clickHandler())
+        this.setState('num', num)
+        const item = createNode(
+            `<li class="numbers__item" data-id="${this.state.num}">${this.state.num}</li>`
+        )
+        
+        item.addEventListener('click', e => this.clickHandler(e.target.dataset.id))
         
         return item
     }
 
-    clickHandler() {
-        const item = this.get()
-
-        if(hasClass(item, 'active')) {
-            toggleClass(item, 'active')
+    clickHandler(event) {
+        const item = this.get(this.state.num)
+        this.setState('lastClicked', event)
+      
+        if(hasClass(item, 'highlight')) {
             this.clearHighlights()
-        } else {    
-            this.highlightMultiples(item.dataset.id)
+        } else {
+            this.highlightMultiples()
+            this.clearHighlights()
         }
     }
 
     calculateMultiples(num) {
-        // Numbers over multipleLimit have no multiples
-        if(num <= multipleLimit) {
-            this.filteredArray = this.numbersArray.filter(v => v % num === 0)
-            return this.filteredArray
-        }
-        return false;
+        return new Promise((resolve, reject) => {
+            // Numbers over multipleLimit have no multiples
+            if(num <= multipleLimit) {
+                const filtered = this.state.fullNumArray.filter(v => v % num === 0)
+                this.setState('filteredNumArray', filtered)
+
+                resolve(filtered)
+            } else {
+                reject(new Error(`The number ${num} has no multiples! Please try a lower number`))
+            }
+        })
     }
 
-    highlightMultiples(num) {
-        this.calculateMultiples(num).forEach(
-            v => {
-                this.number = v
-                this.toggleHighlight()
-            }
-        )
+    highlightMultiples() {
+        this.calculateMultiples(this.state.num)
+            .then(filtered => 
+                filtered.forEach(v => {
+                    this.setState('num', v)
+                    this.toggleHighlight(this.state.num)
+                })
+            )
+            .catch(console.log)
+
+        this.resetClickState()
     }
     
     toggleHighlight(num) {
@@ -52,7 +87,12 @@ export default class Block {
     }   
 
     clearHighlights() {
-        this.filteredArray.forEach(v => toggleHighlight(this.get(v)))
-    }
+        const items = [...document.querySelectorAll('.highlight')]
+        
+        if(items) {
+            items.forEach(v => this.toggleHighlight(v.dataset.id))
+        }  
 
+        this.resetClickState()
+    }
 }

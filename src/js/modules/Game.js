@@ -1,18 +1,20 @@
-import { blockCount, multipleLimit } from '../config/config'
-import { returnNode } from '../helpers/helpers'
-import NumberBlock, {get} from './NumberBlock'
+import { blockCount } from '../config/config'
+import { createNode } from '../helpers/helpers'
+import Block from './Block'
 
 export default class Game {
     constructor() {
+        this.d = document
         this.blockCount = blockCount
-        this.numbersArray = this.generateArray()
+        this.numbersArray = this.generateNumbersArray()
+        this.container = this.d.createDocumentFragment()
     }
 
     init() {
-        this.insertInitial()
+        this.insertBlocks()
     }
 
-    generateArray() {
+    generateNumbersArray() {
         /*
             Creates an array of N length and fills with 
             range 0..N then shifts by one
@@ -20,35 +22,25 @@ export default class Game {
         return [...Array(this.blockCount)].map((v, i) => ++i)
     }    
 
-    createItem(i) {
-       return returnNode(`<li data-id="${i}">${i}</li>`)
+    buildBlocks() {
+        return new Promise((resolve, reject) => {
+            if(this.numbersArray) {
+                this.numbersArray.forEach(num => {
+                    const item = new Block(this.numbersArray)   
+                    this.container.appendChild(item.create(num))
+                })
+                resolve()
+            } else {
+                reject(new Error('Error with numbersArray'))
+            }
+        })
     }
 
-    calculateMultiples(n) {
-        if(n <= multipleLimit) {
-            return this.numbersArray.filter(v => v % n === 0)
-        }
-        return false;
+    insertBlocks() {
+        this.buildBlocks()
+            .then(() =>
+                this.d.querySelector('.numbers__list').appendChild(this.container)
+            )
+            .catch(console.log)
     }
-
-    insertInitial() {
-        const items = document.createDocumentFragment()        
-        this.numbersArray
-            .forEach(num => {
-                const item = this.createItem(num)
-                item.addEventListener('click', () => this.handleClick(num))
-                items.appendChild(item)
-            })
-
-        document.querySelector('.numbers__list').appendChild(items)
-
-        const a = new NumberBlock(10)
-        console.log(a.get())
-    }
-
-    highlightMultiples(num) {
-        this.calculateMultiples(num)
-            .forEach(v => document.querySelector(`[data-id="${v}"]`).classList.add('h'))
-    }
-
 }           

@@ -10,7 +10,7 @@ const toggleClass = (node, cls) =>
   hasClass(node, cls) ? node.classList.remove(cls) : node.classList.add(cls)
 
 const hasClass = (node, cls) => 
-  node.classList.contains(cls) || 0
+  node.classList.contains(cls) || null
 
 export {
     createNode,

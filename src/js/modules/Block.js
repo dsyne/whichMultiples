@@ -38,7 +38,7 @@ export default class Block {
             `<li class="numbers__item" data-id="${this.state.num}">${this.state.num}</li>`
         )
         
-        item.addEventListener('click', e => this.clickHandler(e.target.dataset.id))
+        item.addEventListener('click', event => this.clickHandler(event.target.dataset.id))
         
         return item
     }
@@ -50,8 +50,8 @@ export default class Block {
         if(hasClass(item, 'highlight')) {
             this.clearHighlights()
         } else {
-            this.highlightMultiples()
             this.clearHighlights()
+                .then(() => this.highlightMultiples())
         }
     }
 
@@ -59,7 +59,7 @@ export default class Block {
         return new Promise((resolve, reject) => {
             // Numbers over multipleLimit have no multiples
             if(num <= multipleLimit) {
-                const filtered = this.state.fullNumArray.filter(v => v % num === 0)
+                const filtered = this.state.fullNumArray.filter(item => item % num === 0)
                 this.setState('filteredNumArray', filtered)
 
                 resolve(filtered)
@@ -72,14 +72,13 @@ export default class Block {
     highlightMultiples() {
         this.calculateMultiples(this.state.num)
             .then(filtered => 
-                filtered.forEach(v => {
-                    this.setState('num', v)
+                filtered.forEach(item => {
+                    this.setState('num', item)
                     this.toggleHighlight(this.state.num)
+                    this.resetClickState()
                 })
             )
             .catch(console.log)
-
-        this.resetClickState()
     }
     
     toggleHighlight(num) {
@@ -87,12 +86,18 @@ export default class Block {
     }   
 
     clearHighlights() {
-        const items = [...document.querySelectorAll('.highlight')]
-        
-        if(items) {
-            items.forEach(v => this.toggleHighlight(v.dataset.id))
-        }  
+        return new Promise((resolve, reject) => {
+            const items = [...document.querySelectorAll('.highlight')]
+            
+            if(items) {
+                items.forEach(item => this.toggleHighlight(item.dataset.id))
+                this.resetClickState()
+                resolve()
+            }
+            else {
+                reject(new Error('No highlighted items'))
+            }
+        })
 
-        this.resetClickState()
     }
 }

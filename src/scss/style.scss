@@ -1,6 +1,7 @@
+// Mixins 
+@import 'mixins/bp';
+// Global
 @import 'global/variables';
 @import 'global/global';
-
-.h {
-    border: 1px solid red;  
-}
+// Modules
+@import 'modules/block'

@@ -1,0 +1,19 @@
+body,
+html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: $font-main;
+}
+
+.main {
+    background: $color-bg-alt;
+}
+
+h1 {
+    padding: 0;
+    margin: 0;
+    text-align: center;
+    font-size: 5vh;
+    line-height: 10vh;
+}

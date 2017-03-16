@@ -1,0 +1,36 @@
+{
+  "name": "which-multiples",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "author": "Tom Currell",
+  "license": "ISC",
+  "scripts": {
+    "start": "webpack --color --display-error-details -w",
+    "test": "mocha ./src/js/**/*spec.js -R spec --require babel-register"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "babel-cli": "^6.22.2",
+    "babel-loader": "^6.2.10",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "babel-preset-env": "^1.1.8",
+    "babel-preset-latest": "^6.24.0",
+    "browser-sync": "^2.18.7",
+    "browser-sync-webpack-plugin": "^1.1.4",
+    "chai": "^3.5.0",
+    "chai-spies": "^0.7.1",
+    "copy-webpack-plugin": "^4.0.1",
+    "css-loader": "^0.26.1",
+    "file-loader": "^0.10.0",
+    "jsdom": "^9.12.0",
+    "jsdom-global": "^2.1.1",
+    "mocha": "^3.1.2",
+    "node-sass": "^4.5.0",
+    "postcss-loader": "^1.2.2",
+    "sass-loader": "^5.0.1",
+    "style-loader": "^0.13.1",
+    "url-loader": "^0.5.7",
+    "webpack": "^2.2.1"
+  }
+}

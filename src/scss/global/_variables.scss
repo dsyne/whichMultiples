@@ -1,0 +1,20 @@
+// Fonts
+$font-main: 'Ubuntu', sans-serif;
+
+// Colors
+$color-font: #222;
+$color-bg: #fff;
+$color-bg-alt: #ccc;
+$color-highlight: #ec7c09;
+$color-highlight-bg: #eee;
+
+// Breakpoints
+$bp-mobile: 480px;
+$bp-tablet: 768px;
+$bp-desktop: 1200px;
+
+$breakpoints: (
+    'mobile': (min-width:  $bp-mobile),
+    'tablet': (min-width:  $bp-tablet),
+    'desktop': (min-width: $bp-desktop)
+);

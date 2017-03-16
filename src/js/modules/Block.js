@@ -1,5 +1,8 @@
 import { multipleLimit } from '../config/config'
-import { createNode, toggleClass, hasClass } from '../helpers/helpers'
+import { createNode, toggleClass, hasClass, removeClass, addClass } from '../helpers/helpers'
+
+const activeClass = 'active'
+const highlightClass = 'highlight'
 
 export default class Block {
     constructor(currentNumber, numbersArray) {
@@ -12,7 +15,7 @@ export default class Block {
     }
 
     setState(key, val) {
-        this.state = {
+        return this.state = {
             ...this.state,
             [key]: val,
         }
@@ -47,9 +50,12 @@ export default class Block {
         const item = this.get(this.state.num)
         this.setState('lastClicked', event)
       
-        if(hasClass(item, 'highlight')) {
+        if(hasClass(item, activeClass)) {
+            removeClass(item, activeClass)
             this.clearHighlights()
         } else {
+            this.clearActive()
+            addClass(item, activeClass)
             this.clearHighlights()
                 .then(() => this.highlightMultiples())
         }
@@ -82,12 +88,12 @@ export default class Block {
     }
     
     toggleHighlight(num) {
-        toggleClass(this.get(num), 'highlight')
+        toggleClass(this.get(num), highlightClass)
     }   
 
     clearHighlights() {
         return new Promise((resolve, reject) => {
-            const items = [...document.querySelectorAll('.highlight')]
+            const items = [...document.querySelectorAll(`.${highlightClass}`)]
             
             if(items) {
                 items.forEach(item => this.toggleHighlight(item.dataset.id))
@@ -99,5 +105,12 @@ export default class Block {
             }
         })
 
+    }
+
+    clearActive() {
+        const items = [...document.querySelectorAll(`.${activeClass}`)]
+        if(items) {
+            items.forEach(item => removeClass(item, activeClass))
+        }
     }
 }

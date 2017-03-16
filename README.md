@@ -1,15 +1,15 @@
 # whichMultiples
 
 ### Install
-Run `npm i`
+`npm i`
 
 ### Start Server
-Run `npm start`
+`npm start`
 
 ### Tests
-Run `npm test`
+`npm test`
 
 ### Info
 
-- Front end [http://localhost:7000]()
+- Front end [http://localhost:7000](http://localhost:7000)
 - Node version 7.7.2
